@@ -1,33 +1,52 @@
-import { useState } from 'react'
-import viteLogo from '/vite.svg'
-import reactLogo from './assets/react.svg'
+import { useAuth0 } from '@auth0/auth0-react'
 import './App.css'
 
 export function App() {
-	const [count, setCount] = useState(0)
+	const { user, isAuthenticated, isLoading } = useAuth0()
+	const { loginWithRedirect, logout } = useAuth0()
+
+	if (!(user && isAuthenticated)) {
+		return (
+			<button type="button" onClick={() => loginWithRedirect()}>
+				Log In
+			</button>
+		)
+	}
+
+	if (isLoading) {
+		return <div>Loading ...</div>
+	}
+
+	const url = new URL(location.href)
 
 	return (
-		<>
-			<div>
-				<a href="https://vite.dev" target="_blank" rel="noreferrer">
-					<img src={viteLogo} className="logo" alt="Vite logo" />
-				</a>
-				<a href="https://react.dev" target="_blank" rel="noreferrer">
-					<img src={reactLogo} className="logo react" alt="React logo" />
-				</a>
-			</div>
-			<h1>Vite + React</h1>
-			<div className="card">
-				<button type="button" onClick={() => setCount((count) => count + 1)}>
-					count is {count}
-				</button>
-				<p>
-					Edit <code>src/App.tsx</code> and save to test HMR
-				</p>
-			</div>
-			<p className="read-the-docs">
-				Click on the Vite and React logos to learn more
-			</p>
-		</>
+		<div>
+			<img src={user.picture} alt={user.name} />
+			<h2>{user.name}</h2>
+			<p>{user.email}</p>
+			Here's your{' '}
+			<a
+				href={`https://my-first-auth0.vercel.app/auth/login?redirectTo=${url.href}`}
+				target="_blank"
+				rel="noreferrer"
+			>
+				first app
+			</a>
+			<button
+				type="button"
+				onClick={() =>
+					logout({ logoutParams: { returnTo: window.location.origin } })
+				}
+			>
+				Log Out
+			</button>
+			<a
+				href="https://next14-push-notification.vercel.app/"
+				target="_blank"
+				rel="noreferrer"
+			>
+				second app
+			</a>
+		</div>
 	)
 }

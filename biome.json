@@ -45,6 +45,16 @@
 					}
 				}
 			}
+		},
+		{
+			"include": ["main.tsx", "env.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"useNamingConvention": "off"
+					}
+				}
+			}
 		}
 	]
 }
